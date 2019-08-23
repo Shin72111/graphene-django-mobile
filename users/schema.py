@@ -2,6 +2,8 @@ import graphene
 from graphene_django import DjangoObjectType
 from django.contrib.auth import get_user_model
 from graphql_jwt.utils import jwt_encode, jwt_payload
+from graphql_jwt.decorators import superuser_required
+from django.shortcuts import get_object_or_404
 
 
 class UserType(DjangoObjectType):
@@ -32,5 +34,30 @@ class CreateUser(graphene.Mutation):
         return CreateUser(user=user)
 
 
+class NominateStaffMutation(graphene.Mutation):
+    user = graphene.Field(UserType)
+
+    class Arguments:
+        username = graphene.String()
+        userId = graphene.Int()
+
+    @superuser_required
+    def mutate(self, info, **kwargs):
+        username = kwargs.get('username')
+        userId = kwargs.get('userId')
+
+        if userId:
+            user = get_object_or_404(get_user_model(), id=userId)
+        elif username:
+            user = get_object_or_404(get_user_model(), username=username)
+        else:
+            raise Exception('Username or user id is required to nominate')
+        user.is_staff = True
+        user.save()
+
+        return NominateStaffMutation(user=user)
+
+
 class UserMutation():
     create_user = CreateUser.Field()
+    nominate_staff = NominateStaffMutation.Field()

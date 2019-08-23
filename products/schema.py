@@ -72,15 +72,15 @@ class AddProductMutation(graphene.Mutation):
     class Arguments:
         supplier = graphene.String(required=True)
         name = graphene.String(required=True)
-        info = graphene.String(required=True)
+        productInfo = graphene.String(required=True)
         price = graphene.Float(required=True)
 
     @staff_member_required
-    def mutate(self, info, supplier, name, info, price):
+    def mutate(self, info, supplier, name, productInfo, price):
         supplier = Supplier.objects.get(name=supplier)
         if supplier is None:
             raise Exception('Supplier does not exist')
-        product = Product.objects.create(name=name, info=info,
+        product = Product.objects.create(name=name, info=productInfo,
                                          supplier=supplier, price=price)
         return AddProductMutation(product=product)
 
