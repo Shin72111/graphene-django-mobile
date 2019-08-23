@@ -18,7 +18,7 @@ class SupplierType(DjangoObjectType):
 class ProductType(DjangoObjectType):
     class Meta:
         model = Product
-        fields = '__all__'
+        exclude = ('cart_set', 'orderitem_set')
 
 
 class ProductQuery(object):
