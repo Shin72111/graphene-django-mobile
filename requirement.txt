@@ -1,0 +1,5 @@
+Django==2.2.4
+django-graphql-jwt==0.2.2
+graphene==2.1.8
+graphene-django==2.5.0
+Pillow==6.1.0
