@@ -6,8 +6,14 @@ from .models import Supplier, Product, ProductImage
 
 
 class ProductImageType(DjangoObjectType):
+    image_url = graphene.String()
+
     class Meta:
         model = ProductImage
+        fields = ['image_url']
+
+    def resolve_image_url(self, info):
+        return f'{info.context.get_host()}{self.image.url}'
 
 
 class SupplierType(DjangoObjectType):
